@@ -23,6 +23,7 @@
 //*****************************************************************************/
 //   MAC IP    00-09-34-XX-8c-1c
 
+#include <string.h>
 #include <stdlib.h>
 
 
@@ -818,16 +819,16 @@ int main(void)
 
     int SendTime;
 
-    unsigned int wByte, realByte;
-    int waByte;
+    unsigned int wByte; //, realByte;
+    //int waByte;
     volatile char  *pSBuf;
     volatile char  *pRSBuf;
 
 
-    volatile unsigned short *FPGA_REG0;
-    volatile unsigned short *FPGA_REG1;
-    volatile unsigned short *FPGA_REG2;
-    volatile unsigned short *FPGA_REG3;
+   // volatile unsigned short *FPGA_REG0;
+   // volatile unsigned short *FPGA_REG1;
+   // volatile unsigned short *FPGA_REG2;
+    //volatile unsigned short *FPGA_REG3;
 //    volatile unsigned short *FPGA_REG4;
 //    volatile unsigned short *FPGA_REG5;
 //    tRectangle sRect;
@@ -843,11 +844,11 @@ int main(void)
     fpga_REGS[2] = 0;
 
 
-    FPGA_REG0 = ((unsigned short*)(0xA0000000 ));
-    FPGA_REG1 = ((unsigned short*)(0xA0000c00 ));
+   // FPGA_REG0 = ((unsigned short*)(0xA0000000 ));
+   // FPGA_REG1 = ((unsigned short*)(0xA0000c00 ));
 
-    FPGA_REG2 = ((unsigned short*)(0xA0000400 ));
-    FPGA_REG3 = ((unsigned short*)(0xA0000800 ));
+   // FPGA_REG2 = ((unsigned short*)(0xA0000400 ));
+   // FPGA_REG3 = ((unsigned short*)(0xA0000800 ));
 
 
 
@@ -1169,14 +1170,15 @@ int main(void)
         if( ((unsigned int)pSBuf) >= ((unsigned int)pRSendBuf) )
         {
             wByte = (((unsigned int)pSBuf) - ((unsigned int)pRSendBuf));
-            waByte = 1;
+           // waByte = 1;
+
         }
         else
         {
             wByte = (((unsigned int)(&(SendBuf[MAXSENDBUF])))- ((unsigned int)pRSendBuf));    ///   ADD For
-            waByte = -1;
+            //waByte = -1;
         }
-        realByte = wByte;
+        //realByte = wByte;
 
 
 //#ifdef DEBAG_MESS_SEND_BSKAN
@@ -1186,7 +1188,7 @@ int main(void)
 //        if( wByte >= SIZE_SEND_PACKET  )
         {
             if( wByte >= (SIZE_SEND_PACKET) )  wByte = (SIZE_SEND_PACKET);                 ///   ADD For
-            memcpy(PageBuf, pRSBuf, wByte );
+            memcpy( (void*)PageBuf, (void*)pRSBuf, wByte );
             if(wByte < SIZE_SEND_PACKET)
                 memset( &PageBuf[wByte], 0, (SIZE_SEND_PACKET-wByte));
 
@@ -1619,13 +1621,13 @@ void write_sBUF(  unsigned int **buf, unsigned int val )
     **buf = val;
     (*buf)++;
     //lou_printf( "%p --- ", *buf);
-    if( (*buf) >= (&SendBuf[MAXSENDBUF] ) )
-        (*buf) = &(SendBuf[0]);
+    if( (void*)(*buf) >= (void*)(&SendBuf[MAXSENDBUF] ) )
+        (*buf) = (void*)&(SendBuf[0]);
 
     //lou_printf( "%p \n", *buf);
 }
 
-#define WRITE_SENDBUF(  _BUF_, _DAT_ ) write_sBUF( &(_BUF_), (_DAT_) )
+#define WRITE_SENDBUF(  _BUF_, _DAT_ ) write_sBUF( ((unsigned int**)&(_BUF_)), (_DAT_) )
 
 /*
 #define WRITE_SENDBUF(  _BUF_, _DAT_ ) { \
@@ -1674,8 +1676,8 @@ int strobState[3] = {0,0,0};
 #define MEAS_ARU_VALUE (0<<26)
 
 
-#define PACK_MEAS(_strobe_, _time_, _amp_ )     ((3<<30) | (_strobe_) | (MEAS_TIME_AMP_VAL) | (((_amp_)&0xff) << 18)    | (_time_)& 0x3ffff)
-#define PACK_ARUVAL(_strobe_, _amp_, _setid_ )  ((3<<30) | (_strobe_) | (MEAS_ARU_VALUE)    | (((_setid_)&0x3ff) << 16) | (_amp_)&0xffff)
+#define PACK_MEAS(_strobe_, _time_, _amp_ )     ((3<<30) | (_strobe_) | (MEAS_TIME_AMP_VAL) | (((_amp_)&0xff) << 18)    | ((_time_)& 0x3ffff))
+#define PACK_ARUVAL(_strobe_, _amp_, _setid_ )  ((3<<30) | (_strobe_) | (MEAS_ARU_VALUE)    | (((_setid_)&0x3ff) << 16) | ((_amp_)&0xffff))
 
 //#define MEAS_TIME_SCALE   (20)
 #define MEAS_TIME_SCALE   (1)
@@ -1863,8 +1865,7 @@ register int         CurATact;
         }
         DateSendState++;
 //        UARTwrite("i", 1);
-
-//        lou_printf("%08X < %08X < %08X\n", (unsigned int)&(SendBuf[0]), (unsigned int)(pSendBuf) , (unsigned int)&(SendBuf[MAXSENDBUF]) ); \
+//        lou_printf("%08X < %08X < %08X\n", (unsigned int)&(SendBuf[0]), (unsigned int)(pSendBuf) , (unsigned int)&(SendBuf[MAXSENDBUF]) );
 
     }
 #else
@@ -1900,11 +1901,6 @@ unsigned int FPGA_Read_DP(  )
 
 void FPGA_Write_DP( unsigned int wey )
 {
-    unsigned short res_lo;
-    unsigned short res_hi;
-    unsigned int res;
-
-//    lou_printf("WRITE DP: %08X \n", wey) ;
     FPGA_WRITE( FPGA_SINC_TIMER1_lo, (wey & 0xffff));
     FPGA_WRITE( FPGA_SINC_TIMER1_hi, ((wey>>16) & 0xffff));
 }
@@ -2225,7 +2221,6 @@ int i;
 void FPGA_Set_GZI_Shem_EHO( TFPGA_Tact_EHO  *takt )
 {
 int GZ2_w;
-int i;
 
     switch( takt->Freq_Hz )   ///   1 - 50 ns
     {
@@ -2435,11 +2430,6 @@ void FPGA_Set_GZI_Shem_Def( void )
     FPGA_Set_GZI_Shem_EHO( &Tact_EHO );
 }
 
-
-
-
-
-
 extern char DateBuf[];
 #define FPGA_MAX_ASCAN_MINMAX    512
 int DefAScale = 0;
@@ -2475,7 +2465,7 @@ void FPGA_GetAScan( void  )
     int i;
     unsigned short Reg;
     unsigned short a,b;
-    unsigned short *pAScanBuf = (unsigned short *)DateBuf;
+    //unsigned short *pAScanBuf = (unsigned short *)DateBuf;
 
     FPGA_WRITE( FPGA_ASCAN_SWAPBUF,  1);
 
