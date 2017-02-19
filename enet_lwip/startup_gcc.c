@@ -26,21 +26,6 @@
 //
 // Forward declaration of the default fault handlers.
 //  lm3s9b92-rom.ld
-/*
-PART_${PART}
-GCC_ARMCM3_LM3S9B95
-TARGET_IS_TEMPEST_RB1
-inline= -mthumb
-sprintf=usprintf
-snprintf=usnprintf
-printf=uipprintf
-PART=LM3S9B95
-SCATTERsourcerygxx_enet_lwip=enet_lwip.ld -T enet_lwip_sourcerygxx.ld
-ENTRY_enet_lwip=ResetISR
-CFLAGSccs=-DTARGET_IS_TEMPEST_RB1
-CFLAGSgcc=-DTARGET_IS_TEMPEST_RB1
-CFLAGSsourcerygxx=-DTARGET_IS_TEMPEST_RB1
-*/
 //*****************************************************************************
 void ResetISR(void);
 static void NmiSR(void);

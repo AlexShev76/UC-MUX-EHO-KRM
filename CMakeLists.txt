@@ -26,7 +26,6 @@ set(CMAKE_ASM_FLAGS "-mthumb ${CPU} ${FPU} -MD")
 set(CMAKE_C_FLAGS "-mthumb ${CPU} ${FPU} -std=gnu99 -ffunction-sections -fdata-sections -MD -Wall")
 set(CMAKE_CXX_FLAGS "-mthumb ${CPU} ${FPU} -ffunction-sections -fdata-sections -MD -Wall -std=c++11")
 
-
 # set linker flags
 set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
@@ -61,7 +60,6 @@ include_directories(
 aux_source_directory(./enet_lwip SRC_LIST)
 aux_source_directory(./utils SRC_LIST)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
-
 
 # add linked library to the project
 target_link_libraries(${PROJECT_NAME}

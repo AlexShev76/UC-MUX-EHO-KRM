@@ -3,10 +3,7 @@
 #include "DSP.h"
 #include "udp_srv.h"
 
-
-
 TFPGA_Tact_EHO   Tact_EHO;
-
 
 /// ---------------------------------------------------------------------------------------------------
 
@@ -78,26 +75,13 @@ TMUX_TAKT *t;
 
         t->KuTab_t_us[2] = 30;
         t->KuTab_a_10[2] = 1023;
-
-
-
     }
     pSETS->TAKT.State =  1;
-
-
-
-
     pMUX_PARAM->CLK_Freq_MHz = CLK_FREQ_MHZ_CONST;
     pMUX_PARAM->Ascan_PointsCount = 300;
     pMUX_DP->DP1 = 0;
     pMUX_DP->DP2 = 0;
-
-
-
-
 }
-
-
 
 extern void FPGA_Set_GZI_Shem_EHO( TFPGA_Tact_EHO  *takt );
 extern void FPGA_Select_Generator(int Generator, unsigned int Period, int IRQMask );
@@ -108,74 +92,38 @@ extern volatile int BoardSyncMode;
 
 void WriteSETS_TO_FPGA( void )
 {
-
 int i;
-int j;
-//int aBeg;
-//int aWidth;
-int TactNum;
-//TMUX_TAKT *t;
-
-
-
-        lou_printf("\r\n\r\nVer: %d \r\n", pSETS->Version );
-        lou_printf("IP: %08X \r\n", pSETS->MainBoard_IP );
-        lou_printf("SyncType: %d \r\n", pSETS->SyncType );
-        lou_printf("Fsmp: %d \r\n", pSETS->Fsmp );
+        logo_printf("\r\n\r\nVer: %d \r\n", pSETS->Version );
+        logo_printf("IP: %08X \r\n", pSETS->MainBoard_IP );
+        logo_printf("SyncType: %d \r\n", pSETS->SyncType );
+        logo_printf("Fsmp: %d \r\n", pSETS->Fsmp );
 //        lou_printf("AscanTakt: %d \r\n", pSETS->AscanTakt );
-        lou_printf(" ------------------------------------------------------\r\n" );
+        logo_printf(" ------------------------------------------------------\r\n" );
 #if(0)
-        TactNum = 0;
         {
-            lou_printf("%2d      St: %d \r\n",TactNum, pSETS->TAKT.State );
+            logo_printf("         St: %d \r\n", pSETS->TAKT.State );
 
-            lou_printf("         F: %d ", pSETS->TAKT.PEPFreq_Hz );
-            lou_printf(" Tl: %d ", pSETS->TAKT.TaktLen_us );
-            lou_printf(" ADel: %d ", pSETS->TAKT.AscanDly_us );
-            lou_printf(" ALen %d \r\n", pSETS->TAKT.AscanLen_us );
+            logo_printf("         F: %d ", pSETS->TAKT.PEPFreq_Hz );
+            logo_printf(" Tl: %d ", pSETS->TAKT.TaktLen_us );
+            logo_printf(" ADel: %d ", pSETS->TAKT.AscanDly_us );
+            logo_printf(" ALen %d \r\n", pSETS->TAKT.AscanLen_us );
 
 
-     //       lou_printf("i strobe Ku:    %d \r\n", pSETS->TAKT.IStrob.Ku );
-     //       lou_printf("i strobe Begin: %d \r\n", pSETS->TAKT.IStrob.Dly_us );
-     //       lou_printf("i strobe With:  %d \r\n", pSETS->TAKT.IStrob.Len_us );
-     //       lou_printf("i strobe Level: %d \r\n", pSETS->TAKT.IStrob.Level_10 );
-            for(j = 0; j < MUX_MAX_STROB; j++ )
+            for(int j = 0; j < MUX_MAX_STROB; j++ )
             {
-                lou_printf("          --Strobe[%d] Sb: %d ",j, pSETS->TAKT.Strob[j].Dly_us );
-                lou_printf(" Sw: %d ", pSETS->TAKT.Strob[j].Len_us );
-                lou_printf(" Sl: %d  %d %d \r\n", pSETS->TAKT.Strob[j].Level_10, pSETS->TAKT.Strob[j].mState, pSETS->TAKT.Strob[j].mPorog );
+                logo_printf("          --Strobe[%d] Sb: %d ",j, pSETS->TAKT.Strob[j].Dly_us );
+                logo_printf(" Sw: %d ", pSETS->TAKT.Strob[j].Len_us );
+                logo_printf(" Sl: %d  %d %d \r\n", pSETS->TAKT.Strob[j].Level_10, pSETS->TAKT.Strob[j].mState, pSETS->TAKT.Strob[j].mPorog );
             }
-            lou_printf("          --Strobe[I] L: %d \r\n",pSETS->TAKT.IStrob.Level_10 );
+            logo_printf("          --Strobe[I] L: %d \r\n",pSETS->TAKT.IStrob.Level_10 );
 
-            lou_printf("         In: %d ", pSETS->TAKT.InChan );
-            lou_printf(" Out: %d \r\n", pSETS->TAKT.OutChan );
+            logo_printf("         In: %d ", pSETS->TAKT.InChan );
+            logo_printf(" Out: %d \r\n", pSETS->TAKT.OutChan );
 
-            lou_printf("         Count: %d \r\n", pSETS->TAKT.KuTab_count );
-            lou_printf(" ------------------------------------------------------\r\n" );
-/*
-            for(i = 0; i < pSETS->TAKT.KuTab_count; i++ )
-                lou_printf(" VRCH %d  t : %d  a : %d  \r\n",i, pSETS->TAKT.KuTab_t_us[i], pSETS->TAKT.KuTab_a_10[i] );
-*/
-/*
-            for(i = 0; i < 64; i++ ){
-                if(i%8)
-                    lou_printf(" %8d", ((int*)(&pSETS->TAKT.IStrob.Ku))[i] );
-                else
-                    lou_printf("\r\n%8d", ((int*)(&pSETS->TAKT.IStrob.Ku))[i] );
-            }
-*/
-
-
+            logo_printf("         Count: %d \r\n", pSETS->TAKT.KuTab_count );
+            logo_printf(" ------------------------------------------------------\r\n" );
         }
 #endif
-
-
-
-    TactNum = 0;
-//    UDPServer->SetsDate.TAKT[0].KuBase10 = value*10;
-
-
-
     Tact_EHO.GZI_Disable = (pSETS->TAKT.OutChan >= 0) ? 0 : 1;
 
     Tact_EHO.PeriodGZI_Type = 1;
@@ -187,7 +135,6 @@ int TactNum;
     Tact_EHO.ABegin_ns = pSETS->TAKT.AscanDly_us * 100;
     Tact_EHO.AWidth_ns = pSETS->TAKT.AscanLen_us * 100;
     Tact_EHO.ACount = 512;
-
 
     for(i = 0; i<MUX_MAX_STROB ; i++){
         Tact_EHO.Strobe[i].Number = i;
@@ -214,24 +161,16 @@ int TactNum;
             case 1: Tact_EHO.Strobe[i].Mode = 2; break;// (00- +pp, 01- -pp, 10- 2pp )
             case 2: Tact_EHO.Strobe[i].Mode = 3; break;// (00- +pp, 01- -pp, 10- 2pp )
         }
-
-       // Tact_EHO.Strobe[i].Type = 0;
         Tact_EHO.Strobe[i].Mode = 2;
     }
 
-
-
-
-    if(pSETS->TAKT.KuTab_count > 1)
-    {
+    if(pSETS->TAKT.KuTab_count > 1) {
         for(i = 0; i < pSETS->TAKT.KuTab_count; i++ ){
             Tact_EHO.VRCH_Time_ns[i] = pSETS->TAKT.KuTab_t_us[i] * 100;
             Tact_EHO.VRCH_Amp_db10[i] = pSETS->TAKT.KuTab_a_10[i];
         }
         Tact_EHO.VRCH_Count =pSETS->TAKT.KuTab_count;
-    }
-    else
-    {
+    } else  {
         Tact_EHO.VRCH_Time_ns[0] = 0;
         Tact_EHO.VRCH_Amp_db10[0] = 0;
         Tact_EHO.VRCH_Count =pSETS->TAKT.KuTab_count;
@@ -245,31 +184,20 @@ int TactNum;
     Tact_EHO.GZI_Energy = pSETS->TAKT.GZI_Energy;
     Tact_EHO.SetsID = pSETS->SetsID;
 
-
     // if(pSETS->Version != CUR_VERSION) return;
     if(pSETS->Version != 4) return;
 
     FPGA_Set_GZI_Shem_EHO( &Tact_EHO );
     pMUX_PARAM->Ascan_PointsCount = Tact_EHO.ACount;
     SetSyncState( pSETS->SyncType );
-
-
-
-
-//        lou_printf("!!!!!!!!!!!!!!!! SINc : %04x \n\r", pSETS->SyncType);
 }
-
-
 
 void SetSyncState( int type )
 {
-
             if(type < 0)  type = pSETS->SyncType;
-
             PeakDP0_Mode = (pSETS->SyncType >> 8) & 0x1;
             PeakDP1_Mode = (pSETS->SyncType >> 9) & 0x1;
             BoardSyncMode = (pSETS->SyncType >> 10) & 0x1;
-
 
             switch( type & 3 ){
             default:
@@ -292,17 +220,4 @@ void SetSyncState( int type )
             break;
         }
 }
-
-
-
 /// ---------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-

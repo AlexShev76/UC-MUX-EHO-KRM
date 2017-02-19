@@ -44,7 +44,7 @@ extern void  my_client_write_exit( void );
 
 
 extern void tcp_logo_init(void);
-extern void lou_printf( const char *format, ... );
+extern void logo_printf( const char *format, ... );
 
 
 
