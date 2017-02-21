@@ -166,8 +166,13 @@ int i;
 
     if(pSETS->TAKT.KuTab_count > 1) {
         for(i = 0; i < pSETS->TAKT.KuTab_count; i++ ){
-            Tact_EHO.VRCH_Time_ns[i] = pSETS->TAKT.KuTab_t_us[i] * 100;
-            Tact_EHO.VRCH_Amp_db10[i] = pSETS->TAKT.KuTab_a_10[i];
+            if(i < MUX_MAX_DAC_POINTS){
+                 Tact_EHO.VRCH_Time_ns[i] = pSETS->TAKT.KuTab_t_us[i] * 100;
+                 Tact_EHO.VRCH_Amp_db10[i] = pSETS->TAKT.KuTab_a_10[i];
+            }else{
+                Tact_EHO.VRCH_Time_ns[i] = pSETS->TAKT.KuTab_ext_t_us[i-MUX_MAX_DAC_POINTS] * 100;
+                Tact_EHO.VRCH_Amp_db10[i] = pSETS->TAKT.KuTab_ext_a_10[i-MUX_MAX_DAC_POINTS];
+            }
         }
         Tact_EHO.VRCH_Count =pSETS->TAKT.KuTab_count;
     } else  {

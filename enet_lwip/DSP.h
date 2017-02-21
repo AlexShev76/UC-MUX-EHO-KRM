@@ -20,6 +20,7 @@
 //#endif
 
 #define MUX_MAX_DAC_POINTS  (16)
+#define MUX_MAX_EXT_DAC_POINTS  (14)
 #define MUX_MAX_STROB       3
 
 
@@ -82,8 +83,9 @@ typedef struct
 /*41*/  short KuTab_t_us[MUX_MAX_DAC_POINTS];    // MUX_MAX_TAKT_COUNT = 16        VRCH points time in us 0 .. 2000
         short KuTab_a_10[MUX_MAX_DAC_POINTS];    // MUX_MAX_TAKT_COUNT = 16        VRCH points demp in db*10 0 .. 1000
 
-/*56*/   TMUX_I_STROB IStrob;
-/*64*/   TMUX_ARU_STROB  ARUStrob;
+/*56*/  short KuTab_ext_t_us[MUX_MAX_EXT_DAC_POINTS];    // MUX_MAX_EXT_DAC_POINTS = 14        VRCH points time in us 0 .. 2000
+        short KuTab_ext_a_10[MUX_MAX_EXT_DAC_POINTS];    // MUX_MAX_EXT_DAC_POINTS = 14        VRCH points demp in db*10 0 .. 1000
+
 /*71*/   int KuBase10;                             //  Ku   in db *10     0 ... 1000
 /*72*/   int Average;                              //  Average = 0
 /*73*/   int StartDelay;                           //  = 0
@@ -169,8 +171,8 @@ typedef struct
 
 
 
-    int VRCH_Time_ns[MUX_MAX_DAC_POINTS];
-    int VRCH_Amp_db10[MUX_MAX_DAC_POINTS];
+    int VRCH_Time_ns[MUX_MAX_DAC_POINTS+MUX_MAX_EXT_DAC_POINTS];
+    int VRCH_Amp_db10[MUX_MAX_DAC_POINTS+MUX_MAX_EXT_DAC_POINTS];
     int VRCH_Count;
 
     int KuIM10;

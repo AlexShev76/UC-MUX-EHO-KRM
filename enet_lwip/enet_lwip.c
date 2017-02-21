@@ -741,7 +741,7 @@ int main(void)
     logo_printf("Locator Init");
     LocatorInit();
     LocatorMACAddrSet(pucMACArray);
-    LocatorAppTitleSet("OKO22 1CH (ntz)");
+    LocatorAppTitleSet("OKO22 1CH (krm)");
     logo_printf("......... ok \n\r");
 #endif
     //
@@ -1311,6 +1311,9 @@ register int         CurATact;
                     WRITE_SENDBUF( pSendBuf, PeakDate );
                 } while( i < pCount2 );
             }
+
+            PeakDate = PACK_ARUVAL(MEAS_STROBE_0, 0, Cur_SetsID );
+            WRITE_SENDBUF( pSendBuf, PeakDate );
 
             if( (strobState[0] != 0) && (pCountI > 0) ) {
                 pCountI <<= 1;
