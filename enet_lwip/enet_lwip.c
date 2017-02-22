@@ -1233,6 +1233,8 @@ register int         CurATact;
     MUX = (SlotID -1);
     if(HWREG(FPGA_IRQ_PORT + GPIO_O_RIS) & FPGA_IRQ_bit )
     {
+        Cur_SetsID = Set_SetsID;
+
         if( strobState[1] != 0 ) {
             FPGA_READ( pCount1, FPGA_STROB_1_MCOUNT);
             if( pCount1 > 16 )  pCount1 = 16;
