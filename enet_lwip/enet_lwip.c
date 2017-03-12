@@ -741,7 +741,9 @@ int main(void)
     logo_printf("Locator Init");
     LocatorInit();
     LocatorMACAddrSet(pucMACArray);
-    LocatorAppTitleSet("OKO22 1CH (krm)");
+
+     LocatorAppTitleSet("OKO22 SNK V-35 ["__DATE__" "__TIME__"]" );
+//    LocatorAppTitleSet("OKO22 1CH (krm)");
     logo_printf("......... ok \n\r");
 #endif
     //
@@ -1338,10 +1340,14 @@ register int         CurATact;
         }
         else
         {
-               i = FPGA_Read_DP( )   & 0x3FFFFFFF;
-               WRITE_SENDBUF( pSendBuf, ((1<<30) | i) );
-                i = GZI_Counter & 0x3FFFFFFF;
+            i = FPGA_Read_DP( )   & 0x3FFFFFFF;
+            WRITE_SENDBUF( pSendBuf, ((1<<30) | i) );
+            i = GZI_Counter & 0x3FFFFFFF;
             WRITE_SENDBUF( pSendBuf, ((2<<30) | i) ); oldDP1 = i;
+
+            PeakDate = PACK_ARUVAL(MEAS_STROBE_0, 0, Cur_SetsID );
+            WRITE_SENDBUF( pSendBuf, PeakDate );
+
 
             if( CurATact  )
                {
